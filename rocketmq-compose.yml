@@ -1,0 +1,34 @@
+# docker-compose -f rocketmq-compose.yml up -d
+services:
+  namesrv:
+    image: apache/rocketmq:5.2.0
+    container_name: rmqnamesrv
+    ports:
+      - 9876:9876
+    command: sh mqnamesrv -n localhost:9876
+    restart: always
+  broker:
+    image: apache/rocketmq:5.2.0
+    container_name: rmqbroker
+    ports:
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
+      - 8081:8081
+    volumes:
+      - ${PWD}/rocketmq/broker/conf/broker.conf:/home/rocketmq/rocketmq-5.2.0/conf/broker.conf
+    command: sh mqbroker -n namesrv:9876 --enable-proxy -c /home/rocketmq/rocketmq-5.2.0/conf/broker.conf
+    depends_on:
+      - namesrv
+    restart: always
+  rocketmq-dashboard:
+    image: apacherocketmq/rocketmq-dashboard:2.0.1
+    container_name: rocketmq-dashboard
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=namesrv:9876
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - namesrv
+      - broker
