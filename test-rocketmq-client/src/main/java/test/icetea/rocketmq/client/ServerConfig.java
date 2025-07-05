@@ -8,5 +8,6 @@ public class ServerConfig {
     public static final String NORMAL_TOPIC_NAME = "test_topic";
     // 延迟消息topic
     public static final String DELAY_TOPIC_NAME = "test_delay_topic";
-
+    // 顺序消息topic
+    public static final String FIFO_TOPIC_NAME = "test_fifo_topic";
 }
